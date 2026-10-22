@@ -1,0 +1,249 @@
+/*
+    Disciplina : Estruturas de Dados
+    Atividade  : TPE 1
+    Estudante  : Marco Antonio Chiarello
+    Data       : 20/10/2026
+
+    Objetivo :
+    Armazenar as notas de cinco estudantes em um vetor, validar os valores
+    digitados (entre 0 e 10) e apresentar um relatorio com a media da turma,
+    a maior e a menor nota, a quantidade de aprovados, de reprovados e de
+    notas acima da media.
+*/
+
+#include <stdio.h>
+
+#define QUANTIDADE 5        /* numero de estudantes da turma */
+#define NOTA_APROVACAO 6.0f /* nota minima para aprovacao */
+
+/*
+    Funcao : lerNotas
+
+    Objetivo :
+    Ler as notas digitadas pelo usuario e guarda-las no vetor,
+    aceitando apenas valores entre 0 e 10.
+
+    Parametros :
+    - notas : vetor onde as notas serao armazenadas;
+    - quantidade : numero de notas que devem ser lidas.
+
+    Retorno :
+    Nenhum (funcao void). O vetor e preenchido diretamente.
+*/
+void lerNotas(float notas[], int quantidade) {
+    int i;
+    float nota;
+    int lidoComSucesso;
+
+    for (i = 0; i < quantidade; i++) {
+        /* Repete a leitura ate o usuario digitar uma nota valida */
+        while (1) {
+            printf("Digite a nota do estudante %d (0 a 10): ", i + 1);
+            lidoComSucesso = scanf("%f", &nota);
+
+            if (lidoComSucesso != 1) {
+                /* Entrada nao numerica: descarta o restante da linha */
+                while (getchar() != '\n');
+                printf("Entrada invalida! Digite um numero.\n");
+            } else if (nota < 0 || nota > 10) {
+                /* Validacao: nota fora do intervalo permitido */
+                printf("Nota invalida! Digite um valor entre 0 e 10.\n");
+            } else {
+                notas[i] = nota; /* nota valida: guarda no vetor */
+                break;
+            }
+        }
+    }
+}
+
+/*
+    Funcao : mostrarNotas
+
+    Objetivo :
+    Apresentar na tela todas as notas armazenadas no vetor.
+
+    Parametros :
+    - notas : vetor que contem as notas;
+    - quantidade : numero de notas armazenadas.
+
+    Retorno :
+    Nenhum (funcao void).
+*/
+void mostrarNotas(float notas[], int quantidade) {
+    int i;
+
+    /* Percorre o vetor mostrando cada nota com seu estudante */
+    for (i = 0; i < quantidade; i++) {
+        printf("Estudante %d: %.2f\n", i + 1, notas[i]);
+    }
+}
+
+/*
+    Funcao : calcularMedia
+
+    Objetivo :
+    Calcular a media das notas armazenadas no vetor.
+
+    Parametros :
+    - notas : vetor que contem as notas;
+    - quantidade : numero de notas armazenadas.
+
+    Retorno :
+    A media aritmetica das notas.
+*/
+float calcularMedia(float notas[], int quantidade) {
+    int i;
+    float soma = 0;
+
+    /* Acumula a soma de todas as notas */
+    for (i = 0; i < quantidade; i++) {
+        soma += notas[i];
+    }
+
+    return soma / quantidade;
+}
+
+/*
+    Funcao : encontrarMaior
+
+    Objetivo :
+    Encontrar a maior nota do vetor.
+
+    Parametros :
+    - notas : vetor que contem as notas;
+    - quantidade : numero de notas armazenadas.
+
+    Retorno :
+    A maior nota encontrada.
+*/
+float encontrarMaior(float notas[], int quantidade) {
+    int i;
+    float maior = notas[0]; /* comeca assumindo que a primeira e a maior */
+
+    /* Compara as demais notas com a maior encontrada ate o momento */
+    for (i = 1; i < quantidade; i++) {
+        if (notas[i] > maior) {
+            maior = notas[i];
+        }
+    }
+
+    return maior;
+}
+
+/*
+    Funcao : encontrarMenor
+
+    Objetivo :
+    Encontrar a menor nota do vetor.
+
+    Parametros :
+    - notas : vetor que contem as notas;
+    - quantidade : numero de notas armazenadas.
+
+    Retorno :
+    A menor nota encontrada.
+*/
+float encontrarMenor(float notas[], int quantidade) {
+    int i;
+    float menor = notas[0]; /* comeca assumindo que a primeira e a menor */
+
+    /* Compara as demais notas com a menor encontrada ate o momento */
+    for (i = 1; i < quantidade; i++) {
+        if (notas[i] < menor) {
+            menor = notas[i];
+        }
+    }
+
+    return menor;
+}
+
+/*
+    Funcao : contarAprovados
+
+    Objetivo :
+    Contar quantos estudantes obtiveram nota maior ou igual a 6,0.
+
+    Parametros :
+    - notas : vetor que contem as notas;
+    - quantidade : numero de notas armazenadas.
+
+    Retorno :
+    A quantidade de estudantes aprovados.
+*/
+int contarAprovados(float notas[], int quantidade) {
+    int i;
+    int aprovados = 0;
+
+    /* Conta cada nota que atinge a nota de aprovacao */
+    for (i = 0; i < quantidade; i++) {
+        if (notas[i] >= NOTA_APROVACAO) {
+            aprovados++;
+        }
+    }
+
+    return aprovados;
+}
+
+/*
+    Funcao : contarAcimaDaMedia
+
+    Objetivo :
+    Contar quantos estudantes obtiveram nota acima da media da turma.
+
+    Parametros :
+    - notas : vetor que contem as notas;
+    - quantidade : numero de notas armazenadas;
+    - media : media da turma, usada como referencia na comparacao.
+
+    Retorno :
+    A quantidade de notas estritamente maiores que a media.
+*/
+int contarAcimaDaMedia(float notas[], int quantidade, float media) {
+    int i;
+    int acima = 0;
+
+    /* Conta as notas que superam a media */
+    for (i = 0; i < quantidade; i++) {
+        if (notas[i] > media) {
+            acima++;
+        }
+    }
+
+    return acima;
+}
+
+/*
+    Funcao : main
+
+    Objetivo :
+    Organizar as chamadas das funcoes e apresentar o relatorio final.
+*/
+int main() {
+    float notas[QUANTIDADE]; /* vetor que armazena as notas da turma */
+    float media;
+    int aprovados;
+    int reprovados;
+
+    /* Etapa 1: leitura e validacao das notas */
+    lerNotas(notas, QUANTIDADE);
+
+    /* Etapa 2: calculos necessarios para o relatorio */
+    media = calcularMedia(notas, QUANTIDADE);
+    aprovados = contarAprovados(notas, QUANTIDADE);
+    reprovados = QUANTIDADE - aprovados; /* quem nao foi aprovado foi reprovado */
+
+    /* Etapa 3: apresentacao do relatorio */
+    printf("\n========== RELATORIO DA TURMA ==========\n");
+    printf("Notas cadastradas:\n");
+    mostrarNotas(notas, QUANTIDADE);
+
+    printf("\nMedia da turma       : %.2f\n", media);
+    printf("Maior nota           : %.2f\n", encontrarMaior(notas, QUANTIDADE));
+    printf("Menor nota           : %.2f\n", encontrarMenor(notas, QUANTIDADE));
+    printf("Aprovados            : %d\n", aprovados);
+    printf("Reprovados           : %d\n", reprovados);
+    printf("Notas acima da media : %d\n",
+           contarAcimaDaMedia(notas, QUANTIDADE, media));
+
+    return 0;
+}
